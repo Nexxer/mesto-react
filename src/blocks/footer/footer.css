@@ -1,0 +1,14 @@
+@import url('./__copyright/footer__copyright.css');
+.footer {
+  font-size: 18px;
+  line-height: 22px;
+  color: #545454;
+}
+
+@media screen and (max-width: 619px) {
+  .footer {
+    padding-left: 19px;
+    font-size: 14px;
+    line-height: 17px;
+  }
+}

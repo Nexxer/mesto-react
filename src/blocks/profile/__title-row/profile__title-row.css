@@ -1,0 +1,4 @@
+.profile__title-row {
+  display: flex;
+  align-items: baseline;
+}

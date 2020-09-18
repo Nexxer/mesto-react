@@ -1,0 +1,18 @@
+.profile__overlay {
+  height: 122px;
+  width: 122px;
+  border-radius: 50%;
+  position: absolute;
+  z-index: 1;
+  background: url(./../../../image/AvatarEdit.svg) no-repeat 50% 50%;
+  top: -1px;
+  left: -1px;
+  opacity: 0;
+  cursor: pointer;
+  transition: opacity 0.3s;
+  background-color: rgba(0, 0, 0, 0.8);
+}
+
+.profile__overlay:hover {
+  opacity: 1;
+}

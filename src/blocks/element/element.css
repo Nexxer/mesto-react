@@ -1,0 +1,19 @@
+@import url("./__image/element__image.css");
+@import url("./__info/element__info.css");
+@import url("./__like/element__like.css");
+@import url("./__like/_active/element__like_active.css");
+@import url("./__title/element__title.css");
+@import url("./__delete/element__delete.css");
+@import url("./__delete/_hide/element__delete_hide.css");
+@import url("./__likes-container/element__likes-container.css");
+@import url("./__likes/element__likes.css");
+
+.element {
+  position: relative;
+  border-radius: 10px;
+  background-color: #fff;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  list-style: none;
+}

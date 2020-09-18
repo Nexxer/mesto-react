@@ -1,0 +1,8 @@
+.elements__list {
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(282px, 282px));
+  grid-gap: 21px 18px;
+  justify-content: center;
+}
