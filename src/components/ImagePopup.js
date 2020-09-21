@@ -2,7 +2,6 @@ import React from 'react'
 
 function ImagePopup(props) {
 
-  if (!props.card) {
     return (
       props.card
         ? (
@@ -16,7 +15,6 @@ function ImagePopup(props) {
         )
         : null
     )
-  }
 }
 
 export default ImagePopup
