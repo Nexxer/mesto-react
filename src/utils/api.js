@@ -29,7 +29,7 @@ class Api {
         about: info.about,
       }),
     })
-    .then((res) => this._getResponseData(res));
+      .then((res) => this._getResponseData(res));
   }
 
   setNewAvatar(avatar) {
@@ -42,13 +42,13 @@ class Api {
     }).then((res) => this._getResponseData(res));
   }
 
-  postNewCard(name, link) {
+  postNewCard(card) {
     return fetch(`${this.url}/cards`, {
       method: "POST",
       headers: this.headers,
       body: JSON.stringify({
-        name: name,
-        link: link,
+        name: card.name,
+        link: card.link,
       }),
     }).then((res) => this._getResponseData(res));
   };

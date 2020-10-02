@@ -1,13 +1,13 @@
 import React from 'react';
-import { api } from '../utils/api';
+import { api } from '../utils/Api';
 import Header from './Header'
 import Main from './Main'
 import Footer from './Footer'
-import PopupWithForm from './PopupWithForm';
 import ImagePopup from './ImagePopup';
 import CurrentUserContext from './../contexts/CurrentUserContext';
 import EditProfilePopup from './EditProfilePopup';
 import EditAvatarPopup from './EditAvatarPopup';
+import AddPlacePopup from './AddPlacePopup';
 
 
 
@@ -20,16 +20,21 @@ function App() {
   const [cards, setCards] = React.useState([]);
 
   React.useEffect(() => {
-    api.getUserInfo().then((values) => {
-      setCurrentUser(values);
-    })
+    api
+      .getUserInfo()
+      .then((values) => {
+        setCurrentUser(values);
+      })
+      .catch((err) => {
+        console.log(`Данные о пользователе не получены. ${err}`);
+      })
   }, []);
 
   React.useEffect(() => {
     api
       .getInitialCards()
       .then((card) => {
-        setCards(card); // при необходимости добавить .reverse() к card
+        setCards(card);
       }).catch((err) => {
         console.log(err);
       });
@@ -39,17 +44,21 @@ function App() {
   function handleCardLike(card) {
     const isLiked = card.likes.some(i => i._id === currentUser._id);
 
-    api.changeLikeCardStatus(card._id, !isLiked).then((newCard) => {
-      const newCards = cards.map((c) => c._id === card._id ? newCard : c);
-      setCards(newCards);
-    });
+    api
+      .changeLikeCardStatus(card._id, !isLiked)
+      .then((newCard) => {
+        const newCards = cards.map((c) => c._id === card._id ? newCard : c);
+        setCards(newCards);
+      });
   }
 
   function handleCardDelete(card) {
-    api.deleteCard(card._id).then(() => {
-      const newCards = cards.filter((c) => c._id !== card._id);
-      setCards(newCards);
-    });
+    api
+      .deleteCard(card._id)
+      .then(() => {
+        const newCards = cards.filter((c) => c._id !== card._id);
+        setCards(newCards);
+      });
   }
 
 
@@ -76,9 +85,9 @@ function App() {
     setSelectedCard(card);
   }
 
-//! DON"T WORK
-  function handleUpdateUser(name, about) {
-    api.setUserInfo(name, about)
+  function handleUpdateUser(info) {
+    api
+      .setUserInfo(info)
       .then((res) => {
         setCurrentUser(res);
       })
@@ -90,15 +99,29 @@ function App() {
       });
   }
 
-
   function handleUpdateAvatar(avatar) {
     api
-      .setUserAvatar(avatar)
+      .setNewAvatar(avatar)
       .then((res) => {
         setCurrentUser(res);
       })
       .catch((err) => {
         console.log(`Ошибка обновления аватара. ${err}`);
+      })
+      .finally(() => {
+        closeAllPopups();
+      });
+  }
+
+  function handleAddPlaceSubmit(card) {
+    api
+      .postNewCard(card)
+      .then((res) => {
+        const newCard = res;
+        setCards([...cards, newCard]);
+      })
+      .catch((err) => {
+        console.log(`Ошибка добавления карточки. ${err}`);
       })
       .finally(() => {
         closeAllPopups();
@@ -124,7 +147,7 @@ function App() {
           <EditAvatarPopup
             isOpen={isEditAvatarPopupOpen}
             onClose={closeAllPopups}
-            onUpdateUser={handleUpdateAvatar}
+            onUpdateAvatar={handleUpdateAvatar}
           />
 
           <EditProfilePopup
@@ -133,31 +156,11 @@ function App() {
             onUpdateUser={handleUpdateUser}
           />
 
-          <PopupWithForm
-            name="add-place"
-            title="Новое место"
+          <AddPlacePopup
             isOpen={isAddPlacePopupOpen}
-            onClose={closeAllPopups}>
-            <input
-              id="place-name"
-              type="text"
-              name="photoname"
-              className="popup__input"
-              placeholder="Название"
-              required
-              minLength={2} maxLength={30}
-            />
-            <span id="place-name-error" className="popup__input_error" />
-            <input
-              id="place-link"
-              type="url"
-              name="photolink"
-              className="popup__input popup__input_compl"
-              placeholder="Ссылка на картинку"
-              required
-            />
-            <span id="place-link-error" className="popup__input_error" />
-          </PopupWithForm>
+            onClose={closeAllPopups}
+            onAddPlace={handleAddPlaceSubmit}
+          />
 
           <ImagePopup
             card={selectedCard}
