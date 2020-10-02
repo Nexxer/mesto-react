@@ -20,15 +20,16 @@ class Api {
     }).then((res) => this._getResponseData(res));
   }
 
-  setUserInfo(name, about) {
+  setUserInfo(info) {
     return fetch(`${this.url}/users/me`, {
       method: "PATCH",
       headers: this.headers,
       body: JSON.stringify({
-        name: name,
-        about: about,
+        name: info.name,
+        about: info.about,
       }),
-    }).then((res) => this._getResponseData(res));
+    })
+    .then((res) => this._getResponseData(res));
   }
 
   setNewAvatar(avatar) {
@@ -61,23 +62,33 @@ class Api {
     }).then((res) => this._getResponseData(res));
   };
 
-  setLike(cardId) {
+  // setLike(cardId) {
+  //   return fetch(`${this.url}/cards/likes/${cardId}`, {
+  //     method: "PUT",
+  //     headers: {
+  //       authorization: this.headers.authorization,
+  //     },
+  //   }).then((res) => this._getResponseData(res));
+  // };
+
+  // deleteLike(cardId) {
+  //   return fetch(`${this.url}/cards/likes/${cardId}`, {
+  //     method: "DELETE",
+  //     headers: {
+  //       authorization: this.headers.authorization,
+  //     },
+  //   }).then((res) => this._getResponseData(res));
+  // };
+
+  changeLikeCardStatus(cardId, isLiked) {
     return fetch(`${this.url}/cards/likes/${cardId}`, {
-      method: "PUT",
+      method: (isLiked ? "PUT" : "DELETE"),
       headers: {
         authorization: this.headers.authorization,
       },
     }).then((res) => this._getResponseData(res));
   };
 
-  deleteLike(cardId) {
-    return fetch(`${this.url}/cards/likes/${cardId}`, {
-      method: "DELETE",
-      headers: {
-        authorization: this.headers.authorization,
-      },
-    }).then((res) => this._getResponseData(res));
-  };
 
   _getResponseData(res) {
     if (res.ok) {
