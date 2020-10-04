@@ -20,35 +20,27 @@ function App() {
   const [cards, setCards] = React.useState([]);
 
   React.useEffect(() => {
-    api
-      .getUserInfo()
-      .then((values) => {
+    Promise.all([api.getUserInfo(), api.getInitialCards()])
+      .then(([values, card]) => {
         setCurrentUser(values);
+        setCards(card);
       })
       .catch((err) => {
-        console.log(`Данные о пользователе не получены. ${err}`);
+        console.log(`Данные не получены. ${err}`);
       })
-  }, []);
-
-  React.useEffect(() => {
-    api
-      .getInitialCards()
-      .then((card) => {
-        setCards(card);
-      }).catch((err) => {
-        console.log(err);
-      });
   }, []);
 
 
   function handleCardLike(card) {
     const isLiked = card.likes.some(i => i._id === currentUser._id);
-
     api
       .changeLikeCardStatus(card._id, !isLiked)
       .then((newCard) => {
         const newCards = cards.map((c) => c._id === card._id ? newCard : c);
         setCards(newCards);
+      })
+      .catch((err) => {
+        console.log(`Ошибка лайка. ${err}`);
       });
   }
 
@@ -58,6 +50,9 @@ function App() {
       .then(() => {
         const newCards = cards.filter((c) => c._id !== card._id);
         setCards(newCards);
+      })
+      .catch((err) => {
+        console.log(`Ошибка удаления карточки. ${err}`);
       });
   }
 
@@ -90,13 +85,11 @@ function App() {
       .setUserInfo(info)
       .then((res) => {
         setCurrentUser(res);
+        closeAllPopups();
       })
       .catch((err) => {
         console.log(`Ошибка обновления данных пользователя. ${err}`);
       })
-      .finally(() => {
-        closeAllPopups();
-      });
   }
 
   function handleUpdateAvatar(avatar) {
@@ -104,13 +97,11 @@ function App() {
       .setNewAvatar(avatar)
       .then((res) => {
         setCurrentUser(res);
+        closeAllPopups();
       })
       .catch((err) => {
         console.log(`Ошибка обновления аватара. ${err}`);
       })
-      .finally(() => {
-        closeAllPopups();
-      });
   }
 
   function handleAddPlaceSubmit(card) {
@@ -118,14 +109,12 @@ function App() {
       .postNewCard(card)
       .then((res) => {
         const newCard = res;
-        setCards([...cards, newCard]);
+        setCards([newCard, ...cards]);
+        closeAllPopups();
       })
       .catch((err) => {
         console.log(`Ошибка добавления карточки. ${err}`);
       })
-      .finally(() => {
-        closeAllPopups();
-      });
   }
 
   return (
